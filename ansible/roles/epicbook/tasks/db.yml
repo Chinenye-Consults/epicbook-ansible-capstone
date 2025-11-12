@@ -15,6 +15,13 @@
     global: yes
     state: present
 
+# Download Azure MySQL CA certificate
+- name: Download Azure MySQL CA certificate
+  ansible.builtin.get_url:
+    url: https://dl.cacerts.digicert.com/BaltimoreCyberTrustRoot.crt.pem
+    dest: /etc/mysql/ca.pem
+    mode: '0644'
+
 # Create ~/.my.cnf for safe login
 - name: Ensure ~/.my.cnf exists
   copy:
@@ -30,13 +37,15 @@
 
 # Ensure the database exists
 - name: Ensure MySQL database exists
-  mysql_db:
+  community.mysql.mysql_db:
     name: "{{ mysql_database }}"
     state: present
     login_user: "{{ mysql_username }}"
     login_password: "{{ mysql_password }}"
     login_host: "{{ mysql_host }}"
-
+    client_cert: /etc/mysql/client-cert.pem
+    client_key: /etc/mysql/client-key.pem
+    ca_cert: /etc/mysql/ca.pem
 
 # Import SQL files
 - name: Import SQL files
