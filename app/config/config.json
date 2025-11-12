@@ -1,6 +1,6 @@
 {
   "development": {
-  "username": "mysqladmin@epicbook-mysql-dev",
+  "username": "mysqladmin",
   "password": "@xlaBT!V#oZF8pHl",
   "database": "bookstore",
   "host": "epicbook-mysql-dev.mysql.database.azure.com",
