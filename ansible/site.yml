@@ -1,18 +1,18 @@
 ---
 - name: Prepare system (common)
-  hosts: web
+  hosts: frontend
   become: true
   roles:
     - common
 
 - name: Install and configure Nginx
-  hosts: web
+  hosts: frontend
   become: true
   roles:
     - nginx
 
 - name: Deploy EpicBook app
-  hosts: web
+  hosts: frontend
   become: true
   roles:
     - epicbook
