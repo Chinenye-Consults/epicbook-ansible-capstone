@@ -11,7 +11,7 @@ nginx_link: /etc/nginx/sites-enabled/epicbook.conf
 mysql_host: epicbook-mysql.mysql.database.azure.com
 mysql_port: 3306
 mysql_database: bookstore
-mysql_username: mysqladmin
+mysql_username: mysqladmin@epicbook-mysql-dev
 mysql_password: "@xlaBT!V#oZF8pHl"   
 jwt_secret: "92dced19f997374d785c3e90d0f951590e2e0c6f1d1db4a404a2263715459261"
 allowed_origins: "http://52.178.100.143:3000"    #Frontend VM IP address
