@@ -17,10 +17,11 @@
 
 # Download Azure MySQL CA certificate
 - name: Download Azure MySQL CA certificate
-  ansible.builtin.get_url:
+  get_url:
     url: https://dl.cacerts.digicert.com/BaltimoreCyberTrustRoot.crt.pem
     dest: /etc/mysql/ca.pem
     mode: '0644'
+    validate_certs: no
 
 # Create /root/.my.cnf for safe login
 - name: Ensure /root/.my.cnf exists
