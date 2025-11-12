@@ -1,21 +1,18 @@
 ---
 - name: Prepare system (common)
-  hosts: frontend
+  hosts: web
   become: true
   roles:
     - common
 
 - name: Install and configure Nginx
-  hosts: frontend
+  hosts: web
   become: true
-  vars:
-    nginx_conf: "epicbook.j2"
-    app_port: 3000 
   roles:
     - nginx
 
 - name: Deploy EpicBook app
-  hosts: frontend
+  hosts: web
   become: true
   roles:
     - epicbook
