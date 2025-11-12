@@ -33,53 +33,35 @@
     group: root
     mode: '0644'
 
-# Verify MySQL connectivity with SSL before creating DB
-- name: Verify MySQL SSL connection
-  shell: >
-    mysql --ssl-ca=/etc/ssl/certs/BaltimoreCyberTrustRoot.crt.pem
-    -h epicbook-mysql.mysql.database.azure.com
-    -u mysqladmin@epicbook-mysql-dev
-    -p'@xlaBT!V#oZF8pHl'
-    -e "SELECT VERSION();"
-  register: mysql_ssl_test
-  ignore_errors: true
-
-- name: Debug MySQL SSL test output
-  debug:
-    var: mysql_ssl_test.stdout_lines
-
 # Create or ensure the database exists
 - name: Ensure MySQL database exists
   community.mysql.mysql_db:
-    name: bookstore                  # database name
+    name: "{{ mysql_database }}"
     state: present
-    login_host: epicbook-mysql.mysql.database.azure.com
-    login_port: 3306
-    login_user: mysqladmin@epicbook-mysql-dev
-    login_password: "@xlaBT!V#oZF8pHl"
-    ssl_ca: /etc/ssl/certs/BaltimoreCyberTrustRoot.crt.pem
+    login_host: "{{ mysql_host }}"
+    login_port: "{{ mysql_port }}"
+    login_user: "{{ mysql_username }}"
+    login_password: "{{ mysql_password }}"
+    ssl_disabled: yes
 
 # Import schema and data
-- name: Import database schema
-  shell: mysql --ssl-ca=/etc/ssl/certs/BaltimoreCyberTrustRoot.crt.pem \
-    -h {{ mysql_host }} -u {{ mysql_username }} -p{{ mysql_password }} {{ mysql_database }} < {{ app_dir }}/db/BuyTheBook_Schema.sql
+- name: Import SQL files
+  shell: mysql -h {{ mysql_host }} -u {{ mysql_username }} -p{{ mysql_password }} {{ mysql_database }} < {{ app_dir }}/db/BuyTheBook_Schema.sql
   args:
     executable: /bin/bash
 
-- name: Import author seed data
-  shell: mysql --ssl-ca=/etc/ssl/certs/BaltimoreCyberTrustRoot.crt.pem \
-    -h {{ mysql_host }} -u {{ mysql_username }} -p{{ mysql_password }} {{ mysql_database }} < {{ app_dir }}/db/author_seed.sql
+- name: Import author seed
+  shell: mysql -h {{ mysql_host }} -u {{ mysql_username }} -p{{ mysql_password }} {{ mysql_database }} < {{ app_dir }}/db/author_seed.sql
   args:
     executable: /bin/bash
 
-- name: Import books seed data
-  shell: mysql --ssl-ca=/etc/ssl/certs/BaltimoreCyberTrustRoot.crt.pem \
-    -h {{ mysql_host }} -u {{ mysql_username }} -p{{ mysql_password }} {{ mysql_database }} < {{ app_dir }}/db/books_seed.sql
+- name: Import books seed
+  shell: mysql -h {{ mysql_host }} -u {{ mysql_username }} -p{{ mysql_password }} {{ mysql_database }} < {{ app_dir }}/db/books_seed.sql
   args:
     executable: /bin/bash
 
-# Run migrations and seeders if they exist
-- name: Check if migrations folder exists
+# Run migrations if migrations folder exists
+- name: Check migrations folder
   stat:
     path: "{{ app_dir }}/migrations"
   register: migrations_dir
@@ -90,12 +72,13 @@
     chdir: "{{ app_dir }}"
   when: migrations_dir.stat.exists
 
-- name: Check if seeders folder exists
+# Run seeders if seeders folder exists
+- name: Check seeders folder
   stat:
     path: "{{ app_dir }}/seeders"
   register: seeders_dir
 
-- name: Run seeders
+- name: Run seeds
   command: npx sequelize-cli db:seed:all
   args:
     chdir: "{{ app_dir }}"

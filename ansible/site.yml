@@ -16,3 +16,17 @@
   become: true
   roles:
     - epicbook
+
+- hosts: all
+  vars_files:
+    - group_vars/web.yml
+  tasks:
+    - name: Ensure MySQL database exists
+      community.mysql.mysql_db:
+        name: "{{ mysql_database }}"
+        state: present
+        login_host: "{{ mysql_host }}"
+        login_port: "{{ mysql_port }}"
+        login_user: "{{ mysql_username }}"
+        login_password: "{{ mysql_password }}"
+        ssl_disabled: yes
