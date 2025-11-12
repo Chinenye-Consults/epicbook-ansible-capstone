@@ -15,7 +15,7 @@
   hosts: web
   become: true
   roles:
-    - bookstore
+    - epicbook
 
 - hosts: all
   vars_files:
