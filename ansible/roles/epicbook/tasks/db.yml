@@ -27,7 +27,7 @@
 # Copy SSL certificate to Azure MySQL Server
 - name: Copy Azure MySQL certificate to server
   copy:
-    src: BaltimoreCyberTrustRoot.crt.pem
+    src: files/BaltimoreCyberTrustRoot.crt.pem
     dest: /etc/ssl/certs/BaltimoreCyberTrustRoot.crt.pem
     owner: root
     group: root
@@ -50,13 +50,14 @@
 # Create or ensure the database exists
 - name: Ensure MySQL database exists
   community.mysql.mysql_db:
-    name: "{{ mysql_database }}"
+    mysql_database: bookstore
     state: present
-    login_user: "{{ mysql_username }}"
-    login_password: "{{ mysql_password }}"
-    login_host: "{{ mysql_host }}"
-    login_port: "{{ mysql_port }}"
+    mysql_host: epicbook-mysql.mysql.database.azure.com
+    mysql_port: 3306
+    mysql_username: mysqladmin@epicbook-mysql-dev
+    mysql_password: "@xlaBT!V#oZF8pHl"
     ssl_ca: /etc/ssl/certs/BaltimoreCyberTrustRoot.crt.pem
+    ssl_mode: VERIFY_CA   # ensures certificate is verified
 
 # Import schema and data
 - name: Import database schema
