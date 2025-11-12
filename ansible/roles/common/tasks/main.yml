@@ -5,15 +5,37 @@
     upgrade: dist
   tags: update
 
+# Clean up apt cache to avoid broken packages
+- name: Fix broken or held packages if any
+  shell: apt --fix-broken install -y
+  ignore_errors: yes
+
+# Add NodeSource repo for a clean Node.js + npm setup
+- name: Add NodeSource repository for Node.js 18.x
+  shell: |
+    curl -fsSL https://deb.nodesource.com/setup_18.x | bash -
+  args:
+    executable: /bin/bash
+
 - name: Install base packages
   apt:
     name:
       - git
       - curl
       - mysql-client
-      - npm
       - vim
+      - nodejs
       - build-essential
       - python3-pip
       - python3-pymysql
     state: present
+    update_cache: yes
+
+# Optional: ensure npm points to the correct binary
+- name: Verify npm installation
+  command: npm --version
+  register: npm_check
+  ignore_errors: yes
+
+- debug:
+    msg: "NPM version installed: {{ npm_check.stdout | default('not found') }}"
