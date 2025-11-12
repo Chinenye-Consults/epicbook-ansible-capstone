@@ -50,14 +50,14 @@
 # Create or ensure the database exists
 - name: Ensure MySQL database exists
   community.mysql.mysql_db:
-    mysql_database: bookstore
+    name: bookstore                  # database name
     state: present
-    mysql_host: epicbook-mysql.mysql.database.azure.com
-    mysql_port: 3306
-    mysql_username: mysqladmin@epicbook-mysql-dev
-    mysql_password: "@xlaBT!V#oZF8pHl"
+    login_host: epicbook-mysql.mysql.database.azure.com
+    login_port: 3306
+    login_user: mysqladmin@epicbook-mysql-dev
+    login_password: "@xlaBT!V#oZF8pHl"
     ssl_ca: /etc/ssl/certs/BaltimoreCyberTrustRoot.crt.pem
-    ssl_mode: VERIFY_CA   # ensures certificate is verified
+    ssl_mode: VERIFY_CA
 
 # Import schema and data
 - name: Import database schema
