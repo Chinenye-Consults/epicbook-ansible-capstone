@@ -10,6 +10,7 @@
   become: true
   vars:
     nginx_conf: "epicbook.j2"
+    app_port: 3000 
   roles:
     - nginx
 
