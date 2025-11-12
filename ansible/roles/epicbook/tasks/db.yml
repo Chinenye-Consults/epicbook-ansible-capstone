@@ -22,17 +22,17 @@
     dest: /etc/mysql/ca.pem
     mode: '0644'
 
-# Create ~/.my.cnf for safe login
-- name: Ensure ~/.my.cnf exists
+# Create /root/.my.cnf for safe login
+- name: Ensure /root/.my.cnf exists
   copy:
-    dest: /home/chinenye/.my.cnf
+    dest: /root/.my.cnf
     content: |
       [client]
       user={{ mysql_username }}
       password={{ mysql_password }}
       host={{ mysql_host }}
-    owner: chinenye
-    group: chinenye
+    owner: root
+    group: root
     mode: '0600'
 
 # Ensure the database exists
@@ -46,8 +46,6 @@
     client_cert: /etc/mysql/client-cert.pem
     client_key: /etc/mysql/client-key.pem
     ca_cert: /etc/mysql/ca.pem
-    check_implicit_admin: no
-
 
 # Import SQL files
 - name: Import SQL files
