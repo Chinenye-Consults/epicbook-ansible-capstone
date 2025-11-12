@@ -13,42 +13,16 @@ stages:
           name: "linux-hosted-agent"
 
         steps:
-          # Checkout your repo
-          - checkout: self
-          
-          # Clean install of Ansible
           - script: |
-              # Remove conflicting Microsoft keys
-              sudo rm -f /etc/apt/keyrings/microsoft.gpg
-              sudo rm -f /usr/share/keyrings/microsoft.gpg
+              sudo apt update
+              sudo apt install -y ansible
+            displayName: "Install Ansible"
 
-              # Clean apt cache
-              sudo rm -rf /var/lib/apt/lists/*
-
-              # Update apt
-              sudo apt-get update -y
-
-              # Install prerequisites
-              sudo apt-get install -y software-properties-common curl
-
-              # Re-add Microsoft GPG key
-              curl -sSL https://packages.microsoft.com/keys/microsoft.asc | sudo gpg --dearmor -o /etc/apt/trusted.gpg.d/microsoft.gpg
-
-              # Add Ansible PPA
-              sudo add-apt-repository --yes --update ppa:ansible/ansible
-
-              # Update and install Ansible
-              sudo apt-get update -y
-              sudo apt-get install -y ansible
-            displayName: "Cleanly Install Ansible"
-
-          # Download SSH private key securely
           - task: DownloadSecureFile@1
             name: download_ssh_key
             inputs:
               secureFile: "id_ed25519"
 
-          # Setup SSH private key for Ansible
           - script: |
               mkdir -p ~/.ssh
               cp $(download_ssh_key.secureFilePath) ~/.ssh/id_ed25519
@@ -56,10 +30,10 @@ stages:
               echo "StrictHostKeyChecking no" > ~/.ssh/config
             displayName: "Setup SSH Private Key"
 
-          # Run Ansible playbook
           - script: |
               cd ansible
               ansible-playbook -i inventory.ini site.yml --ssh-extra-args "-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null"
             displayName: "Run Ansible Playbook"
             env:
               ANSIBLE_HOST_KEY_CHECKING: "False"
+
