@@ -13,10 +13,15 @@ stages:
           name: "linux-hosted-agent"
 
         steps:
+          # Update system and fix Microsoft repo key conflict
           - script: |
+              sudo rm -f /etc/apt/keyrings/microsoft.gpg
+              sudo apt update
+              sudo apt install -y software-properties-common
+              sudo apt-add-repository --yes --update ppa:ansible/ansible
               sudo apt update
               sudo apt install -y ansible
-            displayName: "Install Ansible"
+            displayName: "Install Ansible Cleanly"
 
           - task: DownloadSecureFile@1
             name: download_ssh_key
