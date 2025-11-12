@@ -46,6 +46,8 @@
     client_cert: /etc/mysql/client-cert.pem
     client_key: /etc/mysql/client-key.pem
     ca_cert: /etc/mysql/ca.pem
+    check_implicit_admin: no
+
 
 # Import SQL files
 - name: Import SQL files
