@@ -15,13 +15,23 @@
     global: yes
     state: present
 
-# Download Azure MySQL CA certificate
-- name: Download Azure MySQL CA certificate
-  get_url:
-    url: https://dl.cacerts.digicert.com/BaltimoreCyberTrustRoot.crt.pem
-    dest: /etc/mysql/ca.pem
+# Ensure SSL Certificate Exists
+- name: Ensure /etc/ssl/certs exists
+  file:
+    path: /etc/ssl/certs
+    state: directory
+    owner: root
+    group: root
+    mode: '0755'
+
+# Copy SQL certificate to server
+- name: Copy SQL certificate to server
+  copy:
+    src: BaltimoreCyberTrustRoot.crt.pem
+    dest: /etc/ssl/certs/BaltimoreCyberTrustRoot.crt.pem
+    owner: root
+    group: root
     mode: '0644'
-    validate_certs: no
 
 # Create /root/.my.cnf for safe login
 - name: Ensure /root/.my.cnf exists

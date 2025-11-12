@@ -16,20 +16,3 @@
   become: true
   roles:
     - epicbook
-
-- name: Setup MySQL credentials file
-  hosts: all
-  become: yes
-
-  tasks:
-    - name: Ensure /root/.my.cnf exists with MySQL credentials
-      copy:
-        dest: /root/.my.cnf
-        content: |
-          [client]
-          user=mysqladmin@epicbook-mysql-dev
-          password="@xlaBT!V#oZF8pHl"
-          host=epicbook-mysql.mysql.database.azure.com
-        owner: root
-        group: root
-        mode: '0600'
