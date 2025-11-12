@@ -37,15 +37,16 @@
 - name: Verify MySQL SSL connection
   shell: >
     mysql --ssl-ca=/etc/ssl/certs/BaltimoreCyberTrustRoot.crt.pem
-    -h {{ mysql_host }}
-    -u {{ mysql_username }} -p{{ mysql_password }}
+    -h epicbook-mysql.mysql.database.azure.com
+    -u mysqladmin@epicbook-mysql-dev
+    -p'@xlaBT!V#oZF8pHl'
     -e "SELECT VERSION();"
-  register: mysql_test
+  register: mysql_ssl_test
   ignore_errors: true
 
-- name: Debug MySQL SSL test
+- name: Debug MySQL SSL test output
   debug:
-    msg: "{{ mysql_test.stdout_lines | default('MySQL SSL test failed or returned no output') }}"
+    var: mysql_ssl_test.stdout_lines
 
 # Create or ensure the database exists
 - name: Ensure MySQL database exists
@@ -57,7 +58,6 @@
     login_user: mysqladmin@epicbook-mysql-dev
     login_password: "@xlaBT!V#oZF8pHl"
     ssl_ca: /etc/ssl/certs/BaltimoreCyberTrustRoot.crt.pem
-    ssl_mode: VERIFY_CA
 
 # Import schema and data
 - name: Import database schema
