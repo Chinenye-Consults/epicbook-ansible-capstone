@@ -11,6 +11,7 @@
       - git
       - curl
       - mysql-client
+      - npm
       - vim
       - build-essential
       - python3-pip
