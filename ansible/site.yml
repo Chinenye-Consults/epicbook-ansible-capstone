@@ -8,6 +8,8 @@
 - name: Install and configure Nginx
   hosts: frontend
   become: true
+  vars:
+    nginx_conf: "epicbook.j2"
   roles:
     - nginx
 
