@@ -39,11 +39,12 @@
 # Ensure the database exists
 - name: Ensure MySQL database exists
   community.mysql.mysql_db:
-    name: "{{ mysql_database }}"
+    name: "bookstore"
     state: present
-    login_user: "{{ mysql_username }}"
-    login_password: "{{ mysql_password }}"
-    login_host: "{{ mysql_host }}"
+    login_user: "mysqladmin@epicbook-mysql-dev"
+    login_password: "@xlaBT!V#oZF8pHl"
+    login_host: epicbook-mysql.mysql.database.azure.com
+    login_port: 3306
     client_cert: /etc/mysql/client-cert.pem
     client_key: /etc/mysql/client-key.pem
     ca_cert: /etc/mysql/ca.pem
