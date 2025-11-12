@@ -1,4 +1,3 @@
-
 ---
 # Wait for MySQL to be ready
 - name: Wait for MySQL to be ready
@@ -15,25 +14,7 @@
     global: yes
     state: present
 
-# Ensure SSL Certificate Exists
-- name: Ensure /etc/ssl/certs exists
-  file:
-    path: /etc/ssl/certs
-    state: directory
-    owner: root
-    group: root
-    mode: '0755'
-
-# Copy SSL certificate to Azure MySQL Server
-- name: Copy Azure MySQL certificate to server
-  copy:
-    src: files/BaltimoreCyberTrustRoot.crt.pem
-    dest: /etc/ssl/certs/BaltimoreCyberTrustRoot.crt.pem
-    owner: root
-    group: root
-    mode: '0644'
-
-# Create or ensure the database exists
+# Create or ensure the database exists (no SSL)
 - name: Ensure MySQL database exists
   community.mysql.mysql_db:
     name: "{{ mysql_database }}"
@@ -42,9 +23,8 @@
     login_port: "{{ mysql_port }}"
     login_user: "{{ mysql_username }}"
     login_password: "{{ mysql_password }}"
-    ssl_disabled: yes
 
-# Import schema and data
+# Import schema and seed data (no SSL)
 - name: Import SQL files
   shell: mysql -h {{ mysql_host }} -u {{ mysql_username }} -p{{ mysql_password }} {{ mysql_database }} < {{ app_dir }}/db/BuyTheBook_Schema.sql
   args:
